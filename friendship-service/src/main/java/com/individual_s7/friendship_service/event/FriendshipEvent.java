@@ -11,6 +11,6 @@ import java.io.Serializable;
 @Builder
 public class FriendshipEvent implements Serializable {
     private Long requester_id;
-    private Long requested_id;
-    private String status;
+    private String requester_username;
+    private String requested_username;
 }

@@ -5,10 +5,7 @@ import com.individual_s7.friendship_service.dto.FriendshipRequestResponse;
 import com.individual_s7.friendship_service.service.FriendshipRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -27,5 +24,13 @@ public class FriendshipRequestController {
     public ResponseEntity<String> handleFriendshipResponse(@RequestBody FriendshipRequestResponse friendshipRequestResponse){
         friendshipRequestService.handleFriendshipResponse(friendshipRequestResponse);
         return ResponseEntity.ok("Handled");
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity<Boolean> checkFriendship(
+            @RequestParam("user1Id") Long user1Id,
+            @RequestParam("user2Id") Long user2Id) {
+        boolean isFriend = friendshipRequestService.checkFriendship(user1Id, user2Id);
+        return ResponseEntity.ok(isFriend);
     }
 }

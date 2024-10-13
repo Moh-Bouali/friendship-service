@@ -47,10 +47,10 @@ public class FriendshipRequestService {
         if ("ACCEPTED".equalsIgnoreCase(response.status())) {
             // Create new friendship
             Friendship newFriendship = Friendship.builder()
-                    .user1_id(response.requester_id())
-                    .user2_id(response.requested_id())
-                    .user1_username(response.requester_username())
-                    .user2_username(response.requested_username())
+                    .user1Id(response.requester_id())
+                    .user2Id(response.requested_id())
+                    .user1Username(response.requester_username())
+                    .user2Username(response.requested_username())
                     .since(response.created_at())
                     .build();
             friendshipRepository.save(newFriendship);
@@ -58,8 +58,8 @@ public class FriendshipRequestService {
             // Emit event to RabbitMQ
             FriendshipEvent event = FriendshipEvent.builder()
                             .requester_id(response.requester_id())
-                                    .requested_id(response.requested_id())
-                                            .status(response.status())
+                                    .requested_username(response.requested_username())
+                                            .requester_username(response.requester_username())
                                                     .build();
 
             rabbitTemplate.convertAndSend(RabbitMQConfig.FRIENDSHIP_RESPONSE_EXCHANGE,
@@ -70,6 +70,8 @@ public class FriendshipRequestService {
         friendshipRequestRepository.delete(request);
     }
 
-
-
+    public Boolean checkFriendship(Long user1_id, Long user2_id){
+        return friendshipRepository.existsByUser1IdAndUser2Id(user1_id, user2_id) ||
+                friendshipRepository.existsByUser1IdAndUser2Id(user2_id, user1_id);
+    }
 }

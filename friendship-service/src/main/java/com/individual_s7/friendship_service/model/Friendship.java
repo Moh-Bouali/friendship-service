@@ -16,9 +16,18 @@ public class Friendship {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long user1_id;
-    private String user1_username;
-    private Long user2_id;
-    private String user2_username;
+
+    @Column(name = "user1_id")
+    private Long user1Id;
+
+    @Column(name = "user1_username")
+    private String user1Username;
+
+    @Column(name = "user2_id")
+    private Long user2Id;
+
+    @Column(name = "user2_username")
+    private String user2Username;
+
     private Timestamp since;
 }
