@@ -61,4 +61,42 @@ public class RabbitMQConfig {
     public Binding bindingResponse(Queue friendshipEventQueue, DirectExchange friendshipEventExchange) {
         return BindingBuilder.bind(friendshipEventQueue).to(friendshipEventExchange).with(FRIENDSHIP_RESPONSE_ROUTING_KEY);
     }
+
+    public static final String USER_DELETE_EXCHANGE = "userDeleteExchange";
+    public static final String USER_DELETE_QUEUE = "friendshipUserDeleteQueue";
+    public static final String USER_DELETE_ROUTING_KEY = "userDeleteKey";
+
+    @Bean
+    public DirectExchange userDeleteExchange() {
+        return new DirectExchange(USER_DELETE_EXCHANGE);
+    }
+
+    @Bean
+    public Queue userDeleteQueue() {
+        return new Queue(USER_DELETE_QUEUE);
+    }
+
+    @Bean
+    public Binding bindingDelete(Queue userDeleteQueue, DirectExchange userDeleteExchange) {
+        return BindingBuilder.bind(userDeleteQueue).to(userDeleteExchange).with(USER_DELETE_ROUTING_KEY);
+    }
+
+    public static final String USER_UPDATE_EXCHANGE = "userUpdateExchange";
+    public static final String USER_UPDATE_QUEUE = "friendshipUserUpdateQueue";
+    public static final String USER_UPDATE_ROUTING_KEY = "userUpdateKey";
+
+    @Bean
+    public DirectExchange userUpdateExchange() {
+        return new DirectExchange(USER_UPDATE_EXCHANGE);
+    }
+
+    @Bean
+    public Queue userUpdateQueue() {
+        return new Queue(USER_UPDATE_QUEUE);
+    }
+
+    @Bean
+    public Binding bindingUpdate(Queue userUpdateQueue, DirectExchange userUpdateExchange) {
+        return BindingBuilder.bind(userUpdateQueue).to(userUpdateExchange).with(USER_UPDATE_ROUTING_KEY);
+    }
 }

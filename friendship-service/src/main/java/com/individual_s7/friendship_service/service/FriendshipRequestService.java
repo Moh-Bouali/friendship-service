@@ -4,16 +4,16 @@ import com.individual_s7.friendship_service.configuration.RabbitMQConfig;
 import com.individual_s7.friendship_service.dto.FriendshipRequestRequest;
 import com.individual_s7.friendship_service.dto.FriendshipRequestResponse;
 import com.individual_s7.friendship_service.event.FriendshipEvent;
+import com.individual_s7.friendship_service.event.UserUpdatedEvent;
 import com.individual_s7.friendship_service.model.Friendship;
 import com.individual_s7.friendship_service.model.FriendshipRequest;
 import com.individual_s7.friendship_service.repository.FriendshipRepository;
 import com.individual_s7.friendship_service.repository.FriendshipRequestRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
-
-import java.security.Timestamp;
 
 @Service
 @RequiredArgsConstructor
@@ -58,6 +58,7 @@ public class FriendshipRequestService {
             // Emit event to RabbitMQ
             FriendshipEvent event = FriendshipEvent.builder()
                             .requester_id(response.requester_id())
+                                .requested_id(response.requested_id())
                                     .requested_username(response.requested_username())
                                             .requester_username(response.requester_username())
                                                     .build();
@@ -68,6 +69,19 @@ public class FriendshipRequestService {
 
         // Delete friendship request after processing
         friendshipRequestRepository.delete(request);
+    }
+
+    // delete user friendship by id that is listened to from rabbitmq
+    @Transactional
+    @RabbitListener(queues = RabbitMQConfig.USER_DELETE_QUEUE)
+    public void deleteUserFriendship(Long id){
+        friendshipRepository.deleteAllByUser1IdOrUser2Id(id, id);
+    }
+
+    @Transactional
+    @RabbitListener(queues = RabbitMQConfig.USER_UPDATE_QUEUE)
+    public void updateUserFriendship(UserUpdatedEvent userUpdatedEvent){
+        friendshipRepository.updateUsernameByUserId(userUpdatedEvent.getId(), userUpdatedEvent.getUsername());
     }
 
     public Boolean checkFriendship(Long user1_id, Long user2_id){

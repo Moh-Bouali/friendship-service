@@ -28,8 +28,8 @@ public class FriendshipRequestController {
 
     @GetMapping("/check")
     public ResponseEntity<Boolean> checkFriendship(
-            @RequestParam("user1Id") Long user1Id,
-            @RequestParam("user2Id") Long user2Id) {
+            @RequestHeader("X-User-Id") Long user1Id,
+            @RequestHeader("X-Friend-Id") Long user2Id) {
         boolean isFriend = friendshipRequestService.checkFriendship(user1Id, user2Id);
         return ResponseEntity.ok(isFriend);
     }
