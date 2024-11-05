@@ -107,17 +107,6 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.flywaydb</groupId>
-				<artifactId>flyway-maven-plugin</artifactId>
-				<version>9.0.0</version> <!-- Use the latest version -->
-				<configuration>
-					<url>jdbc:mysql://localhost:3316/friendship_service</url> <!-- Your DB URL -->
-					<user>root</user>
-					<password>mysql</password>
-				</configuration>
-			</plugin>
-
-			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.10</version>
