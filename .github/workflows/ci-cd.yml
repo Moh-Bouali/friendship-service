@@ -62,6 +62,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-trivy-java-db
 
+      - name: Scan Docker Image
+        run: trivy image --exit-code 1 --severity CRITICAL moh96/friendship-service:latest
+
       - name: Push Docker Image with SHA Tag
         run: docker push moh96/friendship-service:${{ github.sha }}
 
