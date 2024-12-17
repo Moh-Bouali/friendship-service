@@ -11,6 +11,7 @@ import com.individual_s7.friendship_service.repository.FriendshipRepository;
 import com.individual_s7.friendship_service.repository.FriendshipRequestRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
@@ -74,9 +75,20 @@ public class FriendshipRequestService {
     // delete user friendship by id that is listened to from rabbitmq
     @Transactional
     @RabbitListener(queues = RabbitMQConfig.USER_DELETE_QUEUE)
-    public void deleteUserFriendship(Long id){
-        friendshipRepository.deleteAllByUser1IdOrUser2Id(id, id);
+    public void deleteFriendships(Long id) {
+        try {
+            friendshipRepository.deleteAllByUser1IdOrUser2Id(id, id);
+            System.out.println("Deleted friendships for userId: " + id);
+        } catch (Exception e) {
+            System.err.println("Error deleting friendships for userId: " + id);
+            throw new AmqpRejectAndDontRequeueException(e); // Sends to DLQ
+        }
     }
+
+//    @RabbitListener(queues = RabbitMQConfig.USER_DELETE_QUEUE)
+//    public void deleteUserFriendship(Long id){
+//        friendshipRepository.deleteAllByUser1IdOrUser2Id(id, id);
+//    }
 
     @Transactional
     @RabbitListener(queues = RabbitMQConfig.USER_UPDATE_QUEUE)
