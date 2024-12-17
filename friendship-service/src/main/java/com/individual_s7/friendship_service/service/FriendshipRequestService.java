@@ -75,7 +75,7 @@ public class FriendshipRequestService {
     // delete user friendship by id that is listened to from rabbitmq
     @Transactional
     @RabbitListener(queues = RabbitMQConfig.USER_DELETE_QUEUE)
-    public void deleteFriendships(Long id) {
+    public void deleteUserFriendship(Long id) {
         try {
             friendshipRepository.deleteAllByUser1IdOrUser2Id(id, id);
             System.out.println("Deleted friendships for userId: " + id);
